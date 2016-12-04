@@ -11,7 +11,6 @@ object Client {
 
   def main(args: Array[String]): Unit = {
     initRepo()
-    println(UserDao.findAll())
   }
 
 }

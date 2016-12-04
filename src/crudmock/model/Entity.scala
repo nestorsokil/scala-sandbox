@@ -20,12 +20,15 @@ case class Project(override val id: String, name: String, owner: User, date: Loc
 
 object Project
 
-case class Issue(override val id: String, title: String, author: User, project: Project, date: LocalDateTime)
+case class Issue(override val id: String, title: String, author: User, project: Project,
+                 responsible: Set[User], dateOpened: LocalDateTime,
+                 dateClosed: LocalDateTime, isClosed: Boolean = false)
   extends Entity(id)
 
 object Issue
 
-case class Task(override val id: String, desc: String, owner: User, issue: Issue)
+case class Task(override val id: String, desc: String, owner: User, issue: Issue,
+                isCompleted: Boolean = false)
   extends Entity(id)
 
 object Task

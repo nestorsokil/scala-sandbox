@@ -51,6 +51,10 @@ object ProjectDao extends GenericDao[Project] {
 
 object IssueDao extends GenericDao[Issue] {
   this.repo = DataHolder.issues
+
+  def findTasks(issue: Issue): List[Task] = {
+    DataHolder.tasks.filter(_.issue == issue).toList
+  }
 }
 
 object TaskDao extends GenericDao[Task] {
