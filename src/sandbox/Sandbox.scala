@@ -91,8 +91,11 @@ object Sandbox {
     else fib(n-1) + fib(n-2)
   }
 
+  def not[A](f: A => Boolean): A => Boolean = !f(_)
+
   def main(args: Array[String]): Unit = {
-    println(fib(5))
+    val f: Int => Boolean = _ < 5
+    println(List(1, 64, 11, 2, 15, 5, 22) filter not(f))
   }
 
 }
