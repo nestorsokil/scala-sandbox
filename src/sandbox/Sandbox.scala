@@ -67,11 +67,11 @@ object Sandbox {
   def encode[T](xs: List[T]): List[(T, Int)] = pack(xs).map(lst => (lst.head, lst.length))
 
 
-  def isSorted[T](as: List[T], comparator: (T,T) => Boolean): Boolean = {
+  def isSorted[T](as: List[T])(comparator: (T,T) => Boolean): Boolean = {
     as match {
       case Nil => true
       case _ :: Nil => true
-      case x :: rest => comparator(x, rest.head) && isSorted(rest, comparator)
+      case x :: rest => comparator(x, rest.head) && isSorted(rest)(comparator)
     }
   }
 
@@ -83,7 +83,6 @@ object Sandbox {
     }
     loop(xs.length - 1)
   }
-
 
   def fib(n: Int): Int = {
     if(n == 0) 0

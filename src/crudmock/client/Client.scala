@@ -1,6 +1,6 @@
 package crudmock.client
 
-import crudmock.dao.{UserDao}
+import crudmock.dao.{IssueDao, UserDao}
 import crudmock.model._
 
 object Client {
@@ -10,6 +10,8 @@ object Client {
   }
 
   def main(args: Array[String]): Unit = {
+    val i = IssueDao.findById("")
+
     initRepo()
   }
 
