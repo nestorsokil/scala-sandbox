@@ -18,9 +18,7 @@ object Sandbox2 {
 
   def now() = System.nanoTime()
 
-  def carry(x: Int)(f: Int => Boolean) = f(x)
-
   def main(args: Array[String]): Unit = {
-    val predicate: Int => Boolean = _ < 100
+    val f: (Int, Double, String) => String = (x, y, z) => x+y+z
   }
 }

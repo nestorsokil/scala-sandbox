@@ -10,7 +10,7 @@ object DataMunging {
     line.replaceAll("-", "").replaceAll("\\*", "").split(" ").filter(!_.isEmpty)
 
   def linesToCaseValues[T](fun: Array[String] => T)(lines: List[String]): List[T] =
-    lines.map(parseLine).filter(_.nonEmpty).map(fun(_))
+    lines.map(parseLine).withFilter(_.nonEmpty).map(fun(_))
 }
 
 object WeatherData {
@@ -37,7 +37,4 @@ object SoccerLeague{
     val best = teams.sortBy(team => math.abs(team.scored - team.missed)).head
     println(best)
   }
-
 }
-
-
