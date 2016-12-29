@@ -7,53 +7,56 @@ import scala.io.Source
 
 object LineCounter {
 
-  def countLines(dirs: File, ignoreFolders: String*): Long = {
-    def resolveComments(lines: Array[String]): Long = {
-      val iterLines = lines.filterNot(line => line.trim.startsWith("//") || line.isEmpty || line.trim.startsWith("#"))
-      var count = 0
-      var counting = true
-      for(l <- iterLines){
-        if(!counting && l.trim.startsWith("*/"))
-          counting = true
-        if(counting && l.trim.startsWith("/*"))
-          counting = false
-        if(counting)
-          count += 1
+  def countLines(dirs: File, extensions: Array[String], ignoreFolders: String*): Long = {
+    @tailrec
+    def loopFile(lines: List[String], accumulator: Long, counting: Boolean): Long = {
+      lines match {
+        case Nil => accumulator
+        case head :: rest =>
+          if (counting)
+            if (head.trim.startsWith ("/*") )
+              loopFile (rest, accumulator, counting = false)
+            else
+              loopFile (rest, accumulator + 1, counting = true)
+          else if (head.trim.startsWith ("*/") )
+            loopFile (rest, accumulator, counting = true)
+          else loopFile (rest, accumulator, counting = false)
       }
-      count
     }
 
-    def countFileLines(file: File) =
-      resolveComments(Source.fromFile(file, "ISO-8859-1").getLines().toArray)
+    def countFileLines(file: File) = {
+      val filtered =  Source.fromFile(file, "ISO-8859-1").getLines()
+        .filterNot(line => line.isEmpty || line.trim.startsWith("//") || line.trim.startsWith("#"))
+      loopFile(filtered.toList, 0, counting = true)
+    }
 
 
-    def matchesExt(filename: String, patterns: String*): Boolean = {
-      if(patterns.isEmpty) true
+    def matchesExt(filename: String): Boolean = {
+      if(extensions.isEmpty) true
       else {
         val actual = filename.substring(filename.lastIndexOf("."))
-        patterns.contains(actual)
+        extensions.contains(actual)
       }
     }
 
     def isIgnored(dir: File): Boolean = ignoreFolders.contains(dir.getName)
 
     @tailrec
-    def loop(acc: Array[Long], dirs: Array[File]): Array[Long] = {
+    def loopFolders(acc: Array[Long], dirs: Array[File]): Array[Long] = {
       if(dirs.isEmpty) acc
       else {
-        val inThisFolder = dirs.filter(f => f.isFile && matchesExt(f.getName, ".java", ".xml", ".py", ".sql", ".jsp")).map(countFileLines).sum
-        loop(acc :+ inThisFolder,
-          dirs filter(f => f.isDirectory && !isIgnored(f)) flatMap(dir => dir.listFiles()))
+        val inThisFolder = dirs.filter(f => f.isFile && matchesExt(f.getName)).map(countFileLines).sum
+        loopFolders(acc :+ inThisFolder, dirs filter(f => f.isDirectory && !isIgnored(f)) flatMap(dir => dir.listFiles()))
       }
     }
 
-    loop(Array(), dirs.listFiles()).sum
-    //dirs.listFiles().filter(f => f.isFile && matchesExt(f.getName, ".java", ".xml", ".py", ".sql", ".jsp")).map(countLines).sum +
-    //  dirs.listFiles().filter(dir => dir.isDirectory && !isIgnored(dir)).map(f => iterFiles(f, ignoreFolders : _*)).sum
+    loopFolders(Array(), dirs.listFiles()).sum
   }
+
+  def now() = System.nanoTime()
 
   def main(args: Array[String]): Unit = {
     val f = new File("C:\\Users\\nsokil\\IdeaProjects\\dpp8\\")
-    println(countLines(f, ".git", ".idea", "target"))
+    println(countLines(f, Array(".java", ".xml", ".py", ".sql", ".jsp"), ".git", ".idea", "target"))
   }
 }
