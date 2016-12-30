@@ -8,7 +8,7 @@ import scala.io.Source
 object LineCounter {
 
   def countLines(dirs: File, extensions: Array[String], ignoreFolders: String*): Long = {
-    val ext: String => String = fname => fname.substring(fname.lastIndexOf("."))
+    val ext: (String => String) = fname => fname.substring(fname.lastIndexOf("."))
 
     val matchesExt: (String => Boolean) = filename => extensions.isEmpty || extensions.contains(ext(filename))
 
@@ -19,24 +19,25 @@ object LineCounter {
       if(dirs.isEmpty) acc
       else {
         val inThisFolder = dirs.filter(f => f.isFile && matchesExt(f.getName)).map(countFileLines).sum
-        loopFolders(dirs.filter(f => f.isDirectory && !isIgnored(f)).flatMap(dir => dir.listFiles()), acc :+ inThisFolder)
+        val subfolders = dirs.filter(f => f.isDirectory && !isIgnored(f)).flatMap(dir => dir.listFiles())
+        loopFolders(subfolders, acc :+ inThisFolder)
       }
     }
 
-    def countFileLines(file: File) = {
+    def countFileLines(file: File): Long = {
       @tailrec
-      def loopFile(lines: List[String], accumulator: Long, counting: Boolean): Long = {
+      def loopFile(lines: List[String], counter: Long, counting: Boolean): Long = {
         lines match {
-          case Nil => accumulator
+          case Nil => counter
           case first :: rest if counting =>
             first.trim match {
-              case s if s.startsWith("/*")  => loopFile (rest, accumulator, counting = false)
-              case _                        => loopFile (rest, accumulator + 1, counting = true)
+              case s if s.startsWith("/*")  => loopFile (rest, counter, counting = false)
+              case _                        => loopFile (rest, counter + 1, counting = true)
             }
           case first :: rest if !counting =>
             first.trim match {
-              case s if s.startsWith("*/")  => loopFile (rest, accumulator, counting = true)
-              case _                        => loopFile (rest, accumulator, counting = false)
+              case s if s.startsWith("*/")  => loopFile (rest, counter, counting = true)
+              case _                        => loopFile (rest, counter, counting = false)
             }
         }
       }

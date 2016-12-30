@@ -8,7 +8,7 @@ import scala.io.Source
 
 case class Item(SKU: String, price: BigDecimal)
 
-class Pricing()
+trait Pricing
 
 case class SpecialPrice(amount: Int, price: BigDecimal) extends Pricing
 
