@@ -1,5 +1,6 @@
 package sandbox
 import scala.collection.mutable
+import scala.util.Try
 
 object ReverseTest {
   def reverse[T](list: List[T]): List[T] = list.reverse
@@ -29,6 +30,7 @@ object ReverseTest {
   def now() = System.nanoTime()
 
   def main(args: Array[String]) {
+    Try
     val ints = 1 to 1000 toList
     val t1 = now(); reverse(ints); println(now() - t1)
     val t2 = now(); reversePat(ints); println(now() - t2)

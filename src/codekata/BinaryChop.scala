@@ -1,5 +1,7 @@
 package codekata
 
+import scala.annotation.tailrec
+
 object BinaryChop {
   def bSearchIter[A <: Comparable[A]](element: A, xs: List[A]) = {
     var right = xs.size - 1
@@ -16,6 +18,7 @@ object BinaryChop {
   }
 
   def bSearchRec[A <: Comparable[A]](element: A, xs: List[A]) = {
+    @tailrec
     def loopThru(lst: List[A]): Int = {
       val m = lst(lst.size / 2)
       if(m.compareTo(element) == 0) xs.indexOf(m)
@@ -30,18 +33,19 @@ object BinaryChop {
   }
 
   def searchMatch[A <: Comparable[A]](element: A, xs: List[A]): Int = {
+    @tailrec
     def loop(list: List[A]): Int = {
       list match {
         case Nil => -1
         case e :: Nil if e.compareTo(element) == 0 => xs.indexOf(e)
         case e :: _ if e.compareTo(element) == 0 => xs.indexOf(e)
-        case e :: rest => loop(rest)
+        case _ :: rest => loop(rest)
       }
     }
     loop(xs)
   }
 
-  def measure[A <: Comparable[A]](f: (A, List[A]) => Int, a: A, as: List[A]): Long = {
+  def measure[A <: Comparable[A]](f: (A, List[A]) => Int)(a: A, as: List[A]): Long = {
     def now() = System.nanoTime()
     val ns = now()
     f(a, as)
@@ -50,9 +54,9 @@ object BinaryChop {
 
   def main(args: Array[String]) {
     val test = List[Integer](1, 12, 44, 124, 222, 241, 251, 300)
-    println(measure(bSearchIter[Integer], 124: Integer, test))
-    println(measure(bSearchRec[Integer], 124: Integer, test))
-    println(measure(searchMatch[Integer], 124: Integer, test))
+    println("iter: " + measure(bSearchIter[Integer])(124: Integer, test))
+    println("rec: " + measure(bSearchRec[Integer])(124: Integer, test))
+    println("matching: " + measure(searchMatch[Integer])(124: Integer, test))
   }
 
 }
