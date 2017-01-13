@@ -1,4 +1,4 @@
-package codekata
+package codekata.functional
 
 import java.io.File
 
@@ -18,10 +18,10 @@ object LineCounter {
       if(dirs.isEmpty) acc 
       else {
         val inThisFolder = dirs.filter(f => f.isFile && matchesExt(f.getName))
-          .map(file => loopFile(readLines(file).filterNot(isLineIgnored))).sum
+          .map(file => loopFile(readLines(file).filterNot(isLineIgnored)))
         val subfolders = dirs.filter(f => f.isDirectory && !isDirIgnored(f))
           .flatMap(dir => dir.listFiles())
-        loopFolders(subfolders, acc + inThisFolder)
+        loopFolders(subfolders, acc + inThisFolder.sum)
       }
     }
 
@@ -46,7 +46,7 @@ object LineCounter {
   }
 
   def main(args: Array[String]): Unit = {
-    val f = new File("/home/nestor0603/IdeaProjects/printproject")
+    val f = new File("C:\\Users\\nsokil\\IdeaProjects\\dpp7")
     val extensions = Array(".java", ".scala", ".xml", ".sql", ".jsp")
     println(countLines(f, extensions, ".git", ".idea", "target"))
   }

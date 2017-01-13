@@ -1,5 +1,7 @@
 package sandbox
 
+import scala.annotation.tailrec
+
 object Sandbox {
   def sign(x: Int) = if (x > 0) 1 else if (x < 0) -1 else 0
 
@@ -90,10 +92,22 @@ object Sandbox {
     else fib(n-1) + fib(n-2)
   }
 
+  def fibT(x: Int): BigInt = {
+    @tailrec
+    def fibHelper(x: Int, prev: BigInt = 0, next: BigInt = 1): BigInt = x match {
+      case 0 => prev
+      case 1 => next
+      case _ => fibHelper(x - 1, next, next + prev)
+    }
+    fibHelper(x)
+  }
+
   def not[A](f: A => Boolean): A => Boolean = !f(_)
 
+  case class Person(email: String)
+
   def main(args: Array[String]): Unit = {
-    val l = List(1, 2, 24, 53, 3, 2)
+    println(fib(6), fibT(6))
   }
 
 }
