@@ -119,8 +119,6 @@ object Sandbox {
     val isRgb: Image => Boolean = ???
     val processImageIfRgb = processImageIfTrue(isRgb)
 
-
-
     println(processImageIfRgb(Image()))
   }
 
