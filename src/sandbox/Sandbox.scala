@@ -111,15 +111,7 @@ object Sandbox {
   def processIfTrue2[A](processor: A => A)(pred: A => Boolean)(a: A): A =
     if(pred(a)) processor(a) else a
 
-  case class Image()
-
   def main(args: Array[String]): Unit = {
-    val processImage: Image => Image = ???
-    val processImageIfTrue = processIfTrue2(processImage) _
-    val isRgb: Image => Boolean = ???
-    val processImageIfRgb = processImageIfTrue(isRgb)
-
-    println(processImageIfRgb(Image()))
   }
 
 }
