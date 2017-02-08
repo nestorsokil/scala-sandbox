@@ -13,10 +13,10 @@ sealed abstract class Bit() {
 }
 
 final case class One() extends Bit() {
-  override def isSet = true
-  override def unary_!() = Zero()
-  override def |(other: Bit) = One()
-  override def \/(other: Bit) = other match {
+  override def isSet: Boolean = true
+  override def unary_!(): Bit = Zero()
+  override def |(other: Bit): Bit = One()
+  override def \/(other: Bit): Bit = other match {
     case One()  => Zero()
     case Zero() => One()
   }
@@ -29,8 +29,8 @@ final case class One() extends Bit() {
 final case class Zero() extends Bit() {
   override def isSet = false
   override def unary_!() = One()
-  override def |(other: Bit) = other
-  override def \/(other: Bit) = other match {
+  override def |(other: Bit): Bit = other
+  override def \/(other: Bit): Bit = other match {
     case One()  => One()
     case Zero() => Zero()
   }

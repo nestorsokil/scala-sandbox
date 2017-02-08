@@ -8,10 +8,10 @@ class REPL {
   private var u: U[String] = U(Nil)
   private var bindings: mutable.Map[String, O[String]] = mutable.Map()
 
-  val DESCRIPTION = "This is a CLI application that allows you to perform set operations.\n" +
+  private val DESCRIPTION = "This is a CLI application that allows you to perform set operations.\n" +
     "First of all you have to create an universal set (U) which is a superset of any other set created.\n" +
     "Type in 'help' to the console to see the available commands."
-  val HELP = "desc - description\nreset - delete all data, restart seesion;\n[SET_NAME] = [SPACE_SEPARATED_VALUES] - " +
+  private val HELP = "desc - description\nreset - delete all data, restart seesion;\n[SET_NAME] = [SPACE_SEPARATED_VALUES] - " +
     "create new set\n\nSet operations:\n" +
     "+ | or | OR | union - create a union\n" +
     "* | and | AND | & | && | conj - create an intersection\n" +
