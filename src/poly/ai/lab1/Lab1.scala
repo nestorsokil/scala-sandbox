@@ -15,12 +15,12 @@ class REPL {
     "create new set\n\nSet operations:\n" +
     "+ | or | OR | union - create a union\n" +
     "* | and | AND | & | && | conj - create an intersection\n" +
-    "\\ | - | disj - create a complement\n" +
+    "\\ | - | disj | sub | SUB - create a complement\n" +
     "! - create a negation"
   val EXIT = "Exiting."
 
   private val NEGATE_REGEX = "\\!([a-zA-Z0-9]+)".r
-  private val ASSIGNMENT_REGEX = "([a-zA-Z0-9]+)\\s?\\=\\s?([a-zA-Z0-9]+)\\s?(\\+|\\-|\\*|&|&&|\\\\|union|disj|conj|OR|or|AND|and){1}\\s?([a-zA-Z0-9]+)".r
+  private val ASSIGNMENT_REGEX = "([a-zA-Z0-9]+)\\s?\\=\\s?([a-zA-Z0-9]+)\\s?(\\+|\\-|\\*|&|&&|\\\\|union|disj|conj|OR|or|AND|and|SUB|sub){1}\\s?([a-zA-Z0-9]+)".r
   private val ASSIGN_NEGATION_REGEX = "([a-zA-Z0-9]+)\\s?\\=\\s?\\!([a-zA-Z0-9]+)".r
   private val SIMPLE_OP_REGEX = "([a-zA-Z0-9]+)\\s?(\\+|\\-|\\*|&|&&|\\\\|union|disj|conj|OR|or|AND|and){1}\\s?([a-zA-Z0-9]+)".r
 
@@ -66,7 +66,7 @@ class REPL {
   def operate(left: String, op: String, right: String) =
     op match {
       case "+"  | "union" | "or" | "OR" => union(left, right)
-      case "\\" | "disj" | "-" => disj(left, right)
+      case "\\" | "disj" | "-" | "sub" | "SUB" => disj(left, right)
       case "*"  | "&" | "&&" | "conj" | "and" | "AND"  => conj(left, right)
     }
 
