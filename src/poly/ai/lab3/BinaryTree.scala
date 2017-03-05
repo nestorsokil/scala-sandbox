@@ -3,43 +3,75 @@ package poly.ai.lab3
 /**
   * Created by nsokil on 02.03.2017.
   */
-abstract class BinaryTree[A] {
+abstract class BinaryTree {
   def isEmpty: Boolean
   def isRoot: Boolean
-  def add(a: A): BinaryTree[A] = SomeBTree(a, this, EmptyBTree(), EmptyBTree())
-  def value(): A
+  def parent: BinaryTree
+  def left: BinaryTree
+  def right: BinaryTree
+  def addLeft(a: Node): BinaryTree
+  def addRight(a: Node): BinaryTree
+  def value: Node
 
-  private def checkAndTraverse(traversal: (BinaryTree[A] => String)): String = {
+  private def checkAndTraverse(traversal: (BinaryTree => String)): String = {
     this match {
-      case EmptyBTree() => "."
+      case EmptyBTree() => ""
       case _ => traversal(this)
     }
   }
 
   def preOrder(): String =
-    checkAndTraverse({ case SomeBTree(v, _, l, r) =>  v.toString + l.preOrder + r.preOrder })
+    checkAndTraverse(
+      { case SomeBTree(v, _, l, r) => Utils.concat(v.toString, l.preOrder(), r.preOrder()) })
 
   def inOrder(): String =
-    checkAndTraverse({ case SomeBTree(v, _, l, r) =>  l.inOrder + v.toString + r.inOrder })
+    checkAndTraverse(
+      { case SomeBTree(v, _, l, r) => Utils.concat(l.inOrder(), v.toString, r.inOrder()) })
 
   def postOrder(): String =
-    checkAndTraverse({ case SomeBTree(v, _, l, r) =>  l.inOrder + r.inOrder + v.toString })
+    checkAndTraverse(
+      { case SomeBTree(v, _, l, r) =>  Utils.concat(l.postOrder(), r.postOrder(), v.toString) })
+
+  def result(acc: Operand): Operand = {
+    this match {
+      case EmptyBTree() => acc
+      case SomeBTree(v, p, l, r) =>
+        this.value match {
+          case op    @ Operand() => op
+          case bifun @ Binary()  => bifun.perform(l.result(acc), r.result(acc))
+          case ufun  @ Unary()   => ufun.perform(l.result(acc))
+        }
+    }
+  }
 }
 
-case class EmptyBTree[A]() extends BinaryTree[A] {
+case class EmptyBTree() extends BinaryTree {
   override def isEmpty: Boolean = true
   override def isRoot: Boolean = false
 
-  override def value(): A = throw new NoSuchElementException("EmptyBTree has no value")
+  override def left: BinaryTree = ???
+  override def right: BinaryTree = ???
+  override def parent: BinaryTree = ???
+  override def value: Node = ???
+
+  override def addLeft(a: Node): BinaryTree  = SomeBTree(a, this, EmptyBTree(), EmptyBTree())
+  override def addRight(a: Node): BinaryTree = SomeBTree(a, this, EmptyBTree(), EmptyBTree())
 }
 
-case class SomeBTree[A](value: A, parent: BinaryTree[A],
-                        left: BinaryTree[A], right: BinaryTree[A]) extends BinaryTree[A]{
+case class SomeBTree(value: Node, parent: BinaryTree,
+                        var left: BinaryTree, var right: BinaryTree) extends BinaryTree{
   override def isEmpty: Boolean = false
 
   override def isRoot: Boolean = parent match {
     case EmptyBTree() => true
     case _ => false
+  }
+
+  override def addLeft(a: Node): BinaryTree  = {
+    left = SomeBTree(a, this, EmptyBTree(), EmptyBTree()); left
+  }
+  override def addRight(a: Node): BinaryTree = {
+    right = SomeBTree(a, this, EmptyBTree(), EmptyBTree()); right
   }
 }
 
