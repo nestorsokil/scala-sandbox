@@ -3,21 +3,17 @@ package poly.ai.lab3
 /**
   * Created by Admin on 05.03.2017.
   */
-abstract class Node {
-}
+abstract class Node
 
 abstract case class Operand() extends Node
-
 class AlgebraicOperand(val value: Double) extends Operand {
   override def toString: String = value.toString
 }
-
 class LogicalOperand(val value: Boolean) extends Operand {
   override def toString: String = value.toString
 }
 
 abstract class Operation[T <: Operand]() extends Node
-
 abstract case class Unary[T <: Operand]() extends Operation[T] {
   def perform(a: T): T
 }
@@ -26,7 +22,6 @@ abstract case class Binary[T <: Operand]() extends Operation[T] {
 }
 
 abstract class UnaryAlgebraicOperation extends Unary[AlgebraicOperand]
-
 abstract class BinaryAlgebraicOperation extends Binary[AlgebraicOperand] {
   protected def fn: (Double, Double) => Double
   override def perform(a: AlgebraicOperand, b: AlgebraicOperand): AlgebraicOperand =

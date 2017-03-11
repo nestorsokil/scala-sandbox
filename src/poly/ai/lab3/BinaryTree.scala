@@ -4,8 +4,6 @@ package poly.ai.lab3
   * Created by nsokil on 02.03.2017.
   */
 abstract class BinaryTree {
-  def isEmpty: Boolean
-  def isRoot: Boolean
   def parent: BinaryTree
   def left: BinaryTree
   def right: BinaryTree
@@ -30,7 +28,7 @@ abstract class BinaryTree {
 
   def postOrder(): String =
     checkAndTraverse(
-      { case SomeBTree(v, _, l, r) =>  Utils.concat(l.postOrder(), r.postOrder(), v.toString) })
+      { case SomeBTree(v, _, l, r) => Utils.concat(l.postOrder(), r.postOrder(), v.toString) })
 
   def result(acc: Operand): Operand = {
     this match {
@@ -46,27 +44,16 @@ abstract class BinaryTree {
 }
 
 case class EmptyBTree() extends BinaryTree {
-  override def isEmpty: Boolean = true
-  override def isRoot: Boolean = false
-
   override def left: BinaryTree = ???
   override def right: BinaryTree = ???
   override def parent: BinaryTree = ???
   override def value: Node = ???
-
   override def addLeft(a: Node): BinaryTree  = SomeBTree(a, this, EmptyBTree(), EmptyBTree())
   override def addRight(a: Node): BinaryTree = SomeBTree(a, this, EmptyBTree(), EmptyBTree())
 }
 
 case class SomeBTree(value: Node, parent: BinaryTree,
                         var left: BinaryTree, var right: BinaryTree) extends BinaryTree{
-  override def isEmpty: Boolean = false
-
-  override def isRoot: Boolean = parent match {
-    case EmptyBTree() => true
-    case _ => false
-  }
-
   override def addLeft(a: Node): BinaryTree  = {
     left = SomeBTree(a, this, EmptyBTree(), EmptyBTree()); left
   }
